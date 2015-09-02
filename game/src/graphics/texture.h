@@ -1,7 +1,11 @@
 #ifndef _TEXTURE_H_
 #define _TEXTURE_H_
 
+#if defined(__APPLE__)
+#include <OpenGL/gl.h>
+#else
 #include <GL/gl.h>
+#endif //__APPLE__
 
 #include "static_mesh.h"
 
@@ -21,6 +25,7 @@ private:
 	int			dim[2];
 	char		fname[256];
 	GLuint		gl_texture;
+	GLuint    gl_mode;
 };
 
 #endif // _TEXTURE_H_

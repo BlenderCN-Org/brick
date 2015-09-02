@@ -2,10 +2,14 @@
 #define __STATIC_MESH_H__
 
 #include <vector>
+
+#if defined(__APPLE__)
+#include <OpenGL/gl.h>
+#else
 #include <GL/gl.h>
+#endif //__APPLE__
 
-#include "math/math-utility.h"
-
+#include "../math/math-utility.h"
 #include "material.h"
 
 class World;

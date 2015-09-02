@@ -1,0 +1,20 @@
+* Code cleanup:
+	- Physics class / namespace which keeps a list of all physics objects, allows objects to register with it
+	- registration class within World - master list of Things that need to simulate
+	- move all "gl" code into the graphics folder
+
+* Level editor
+	- asset library w/ presets for physics properties
+
+* Figure out how joints work...
+
+* investigate toxiclib for cloth / particles?
+
+* Door / weight scale opener
+	- door object opens when it receives the signal from the "key"
+	- the key sends the signal when a sufficient amount of weight is placed on top of it
+
+* A plant which grows blocks periodically if it has sufficient sunshine and water
+
+* General AI code
+	-disposition, etc...

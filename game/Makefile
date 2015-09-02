@@ -1,12 +1,16 @@
 CC=g++
-CFLAGS=
-LDFLAGS=
 SRC_DIR=src/
+CFLAGS=-I$(SRC_DIR) -I$(SRC_DIR)/math
+CFLAGS+=-I/usr/include/libxml2/
+CFLAGS+=$(shell pkg-config freetype2 --cflags)
+
+LDFLAGS=$(shell pkg-config freetype2 --libs)
+LDFLAGS+=-lxml2
 
 TARGET=brick
 
 SRCS=audio/sdl-audio.cc collision.cc data_feed/data_feed.cpp debug/console.cpp
-SRCS+=event/create-force.cc src/event/event.cc src/event/sequence.cc event/serial.cc
+SRCS+=event/create-force.cc event/event.cc event/sequence.cc event/serial.cc
 SRCS+=fluid2-d.cc graphics/font.cpp graphics/glutility.cc graphics/material.cpp
 SRCS+=graphics/render_shepherd.cpp graphics/shader.cc graphics/static_mesh.cpp
 SRCS+=graphics/texture.cc input/game_controller.cpp level.cc math/function.cpp
@@ -31,11 +35,11 @@ OBJS=$(addsuffix .o,$(BASE_NAMES))
 
 all: $(TARGET)
 
-.cpp.o: $(SRCS)
-	$(CC) $(CFLAGS) $(INCLUDE_PATH) -c $< -o $@
+.cpp.o: $(SRCS_WITH_PATH)
+	$(CC) $(CFLAGS) -c $< -o $@
 
 $(TARGET): $(SRC_DIR)main.cc $(OBJS)
-	$(CC) $(CFLAGS) $(INCLUDE_PATH) $(SRC_DIR)main.cc $(OBJS) -o $(TARGET) $(LIB_PATH) $(LDFLAGS)
+	$(CC) $(CFLAGS) $(SRC_DIR)main.cc $(OBJS) -o $(TARGET) $(LIB_PATH) $(LDFLAGS)
 
 clean:
 	echo $(OBJS)

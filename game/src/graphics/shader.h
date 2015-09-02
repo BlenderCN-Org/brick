@@ -1,7 +1,11 @@
 #ifndef _SHADER_H_
 #define _SHADER_H_
 
+#if defined(__APPLE__)
+#include <OpenGL/gl.h>
+#else
 #include <GL/gl.h>
+#endif //__APPLE__
 
 class Shader
 {

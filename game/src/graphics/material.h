@@ -1,11 +1,15 @@
 #ifndef __MATERIAL_H__
 #define __MATERIAL_H__
 
+#if defined(__APPLE__)
+#include <OpenGL/gl.h>
+#else
 #include <GL/gl.h>
+#endif //__APPLE__
 
 #include <vector>
 
-#include "math/math-utility.h"
+#include "../math/math-utility.h"
 #include "shader.h"
 //#include "texture.h"
 

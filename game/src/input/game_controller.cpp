@@ -4,7 +4,13 @@
 #include <math.h>
 
 #include <GL/glew.h>
-#include <GL/gl.h>
+
+
+#if defined(__APPLE__)
+#include <OpenGL/glu.h>
+#else
+#include <GL/glu.h>
+#endif //__APPLE__
 
 
 #include "game_controller.h"

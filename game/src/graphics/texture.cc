@@ -1,6 +1,12 @@
 #include <SDL2/SDL.h>
+
+#if defined(__APPLE__)
+#include <OpenGL/gl.h>
+#else
 #include <GL/gl.h>
-#include <SOIL/SOIL.h>
+#endif //__APPLE__
+
+#include <SDL2/SDL_image.h>
 
 #include <iostream>
 
@@ -28,48 +34,82 @@ Texture::~Texture() {}
 
 bool Texture::load()
 {
-    if(gl_texture != 0)
-    {
-        assert(glIsTexture(gl_texture) == GL_TRUE);
-        return true; //already loaded
-    }
+		/*
+		if(gl_texture != 0)
+		{
+				assert(glIsTexture(gl_texture) == GL_TRUE);
+				cerr<<"texture already loaded???"<<endl;
+				return true; //already loaded
+		}*/
 
-	glGenTextures(1, &gl_texture);
+		int width, height, channels;
+		//char fname[] = "/home/chandra/brick/game/data/textures/cf_wtr_drop01.tga";
 
-	glBindTexture(GL_TEXTURE_2D, gl_texture);
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	#if defined(__USE_SOIL__)
+		unsigned char *image = SOIL_load_image(fname, &width, &height, &channels, SOIL_LOAD_RGBA);
+		assert(image);
+		dim[0] = width;
+		dim[1] = height;
+	#else
+		//SDL2 way of loading
+		cout<<"SDL Surface image load"<<endl;
+		SDL_Surface *image = IMG_Load(fname);
 
-    if(glIsTexture(gl_texture) != GL_TRUE)
-	{
-	    assert(false);
-	    return false;
-	}
+		assert(image);
+		dim[0] = width = image->w;
+		dim[1] = height = image->h;
 
-    int width, height, channels;
-    unsigned char *image = SOIL_load_image("/home/chandra/brick/game/data/textures/cf_wtr_drop_01.tga", &width, &height, &channels, SOIL_LOAD_RGBA);
-    assert(image);
+		cout<<"image dimensions: "<<dim[0]<<", "<<dim[1]<<endl;
 
-    dim[0] = width;
-    dim[1] = height;
+		if(image->format->BytesPerPixel == 3)
+		{
+			gl_mode = GL_RGB;
+		}
+		else if(image->format->BytesPerPixel == 4)
+		{
+			gl_mode = GL_RGBA;
+		}
 
-    //not sure if these should go here, or in the render loop
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); // Linear Filtering
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); // Linear Filtering
+	#endif
 
+		glGenTextures(1, &gl_texture);
+		glBindTexture(GL_TEXTURE_2D, gl_texture);
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-    glTexImage2D(GL_TEXTURE_2D,
-                 0,
-                 GL_RGBA,
-                 width,
-                 height,
-                 0,
-                 GL_RGBA,
-                 GL_UNSIGNED_BYTE,
-                 image);
+		if(glIsTexture(gl_texture) != GL_TRUE)
+		{
+				assert(false);
+				return false;
+		}
 
-    SOIL_free_image_data(image);
+		glTexImage2D(GL_TEXTURE_2D,
+									0,
+									gl_mode,
+									width,
+									height,
+									0,
+									gl_mode,
+									GL_UNSIGNED_BYTE,
+	#if defined(__USE_SOIL__)
+								 image);
+	#else
+								 image->pixels);
+	#endif
+
+		//not sure if these should go here, or in the render loop
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); // Linear Filtering
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); // Linear Filtering
+
+	#if defined(__USE_SOIL__)
+		SOIL_free_image_data(image);
+	#else
+		//SDL_UnlockSurface(image);
+		SDL_FreeSurface(image);
+	#endif
+
+	assert(glIsTexture(gl_texture) == GL_TRUE);
 
 	return true;
 }

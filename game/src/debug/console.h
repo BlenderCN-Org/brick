@@ -5,8 +5,16 @@
 #include <string>
 
 #include <GL/glew.h>
+
+#if defined(__APPLE__)
+#include <OpenGL/gl.h>
+#include <OpenGL/glu.h>
+#else
 #include <GL/gl.h>
 #include <GL/glu.h>
+#endif //__APPLE__
+
+
 
 #include "graphics/font.h"
 #include "world.h"
@@ -45,7 +53,7 @@ class DebugConsole
         Font *font;
         string current_command;
 
-        unsigned int command_history_idx;
+        int command_history_idx;
         std::vector<string> command_history;
 
         std::vector<string> boolean_switch_names;

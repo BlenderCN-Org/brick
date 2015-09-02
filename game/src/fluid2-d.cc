@@ -1,4 +1,10 @@
+#if defined(__APPLE__)
+#include <OpenGL/gl.h>
+#else
 #include <GL/gl.h>
+#endif //__APPLE__
+
+
 #include <assert.h>
 
 #include "graphics/glutility.h"
@@ -25,7 +31,7 @@ void Fluid2D::init_helper()
 {
 	f = new Fluxel[(dim[0] + 2) * (dim[1] + 2)];
 	f_swap = new Fluxel[(dim[0] + 2) * (dim[1] + 2)];
-	
+
 	for(int i = 0; i < dim[0] + 1; i++) {
 		for(int j = 0; j < dim[1] + 2; j++) {
 			//f[j * (dim[0] + 2) + i].p
@@ -76,7 +82,7 @@ void Fluid2D::advect(int b, float *d, float *d0, float *u, float *v, float dt)
 	//dt1 = dt * dim[1];
 	for(i = 1; i <= N; i++) {
 		for(j = 1; j <= N; j++) {
-			
+
 			x = i - dt0 * u[IX(i,j)];
 			y = j - dt0 * v[IX(i,j)];
 
@@ -101,7 +107,7 @@ void Fluid2D::advect(int b, float *d, float *d0, float *u, float *v, float dt)
 			t0 = 1 - t1;
 			d[IX(i,j)] = s0 * (t0 * d0[IX(i0, j0)] +
 			                   t1 * d0[IX(i0, j1)]) +
-							   s1 * (t0 * d0[IX(i1,j0)] + 
+							   s1 * (t0 * d0[IX(i1,j0)] +
 							         t1 * d0[IX(i1,j1)]);
 		}
 	}
@@ -134,7 +140,7 @@ void Fluid2D::render_gl()
 	float dim[3] = { 2.0, 2.0f, 2.0f };
 	glColor3f(1.0f, 0.0f, 0.0f);
 	gl_cube(pos, dim);
-	
+
 	//render a textured quad
 	//glBegin(GL_QUADS);
 	//	glTexCoord2d(0.0, 0.0); glVertex2d(0.0, 0.0);

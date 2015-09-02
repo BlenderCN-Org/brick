@@ -100,11 +100,11 @@ void DebugConsole::execute()
         }
     }
 
-    if(!current_command.compare("drop_seed"))
+    /*if(!current_command.compare("drop_seed"))
     {
         Float2 drop_pos = world->get_player()->get_pos();
         world->drop_seed(drop_pos);
-    }
+    }*/
     command_history.push_back(current_command);
     command_history_idx = command_history.size() - 1;
     current_command.clear();
